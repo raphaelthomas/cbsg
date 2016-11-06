@@ -20,10 +20,12 @@ func main() {
 	var wordsFileName = flag.String("words", "", "JSON file for words")
 	var bullshitCount = flag.Int("n", 1, "number of BS sentences to generate")
 
-	var adverbStatic string
-	var verbStatic string
-	var nounStatic string
-	var adjectiveStatic string
+	var (
+		adverbStatic    string
+		verbStatic      string
+		nounStatic      string
+		adjectiveStatic string
+	)
 
 	flag.StringVar(&adverbStatic, "adverb", "", "use this adverb")
 	flag.StringVar(&verbStatic, "verb", "", "use this verb")
@@ -40,16 +42,13 @@ func main() {
 
 	jsonParser := json.NewDecoder(wordsFile)
 	if err = jsonParser.Decode(&words); err != nil {
-		panic(err)
+		os.Exit(2)
 	}
 
 	for i := 0; i < *bullshitCount; i++ {
 		rand.Seed(time.Now().UnixNano())
 
-		var adverb string = adverbStatic
-		var verb string = verbStatic
-		var adjective string = adjectiveStatic
-		var noun string = nounStatic
+		adverb, verb, adjective, noun := adverbStatic, verbStatic, adjectiveStatic, nounStatic
 
 		if adverb == "" {
 			adverb = words.Adverbs[rand.Intn(len(words.Adverbs)-1)]
@@ -67,5 +66,5 @@ func main() {
 		fmt.Printf("%s %s %s %s\n", adverb, verb, adjective, noun)
 	}
 
-	return
+	os.Exit(0)
 }
